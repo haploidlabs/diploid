@@ -1,15 +1,23 @@
 .PHONY: dev
 dev:
-	@go run ./cmd/server/main.go
+	@go run ./cmd/diploid/main.go
 
 .PHONY: build
 build:
-	@go build -o ./bin/server ./cmd/server/main.go
+	@go build -o ./.bin/diploid ./cmd/diploid/main.go
 
 .PHONY: run
 run:
-	@./bin/server
+	@./.bin/server
 
 .PHONY: test
 test:
 	@go test -v ./...
+
+.PHONY: db-up
+db-up:
+	@dbmate up
+
+.PHONY: db-gen
+db-gen:
+	@sqlc generate
