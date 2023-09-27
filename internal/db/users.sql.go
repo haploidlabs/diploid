@@ -21,32 +21,39 @@ func (q *Queries) CountUsers(ctx context.Context) (int64, error) {
 }
 
 const createUser = `-- name: CreateUser :one
-insert into users (name, email, password)
-values (?, ?, ?)
-returning id, name, email, password, created_at
+insert into users (name, email, password, role)
+values (?, ?, ?, ?)
+returning id, name, email, password, role, created_at
 `
 
 type CreateUserParams struct {
 	Name     string
 	Email    string
 	Password string
+	Role     string
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, createUser, arg.Name, arg.Email, arg.Password)
+	row := q.db.QueryRowContext(ctx, createUser,
+		arg.Name,
+		arg.Email,
+		arg.Password,
+		arg.Role,
+	)
 	var i User
 	err := row.Scan(
 		&i.ID,
 		&i.Name,
 		&i.Email,
 		&i.Password,
+		&i.Role,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-select id, name, email, password, created_at
+select id, name, email, password, role, created_at
 from users
 where email = ?
 `
@@ -59,13 +66,14 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 		&i.Name,
 		&i.Email,
 		&i.Password,
+		&i.Role,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const getUserByID = `-- name: GetUserByID :one
-select id, name, email, password, created_at
+select id, name, email, password, role, created_at
 from users
 where id = ?
 `
@@ -78,6 +86,7 @@ func (q *Queries) GetUserByID(ctx context.Context, id int64) (User, error) {
 		&i.Name,
 		&i.Email,
 		&i.Password,
+		&i.Role,
 		&i.CreatedAt,
 	)
 	return i, err

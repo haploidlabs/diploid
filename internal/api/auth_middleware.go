@@ -28,7 +28,8 @@ func (api *API) Auth(next http.Handler) http.Handler {
 			WriteError(w, http.StatusUnauthorized, domain.ErrUnauthorized)
 			return
 		}
-		ctx := context.WithValue(r.Context(), "userId", t.Claims.(jwt.MapClaims)["sub"])
+		uid := t.Claims.(jwt.MapClaims)["sub"].(float64)
+		ctx := context.WithValue(r.Context(), "userId", int64(uid))
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

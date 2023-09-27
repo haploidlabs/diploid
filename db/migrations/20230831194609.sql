@@ -1,5 +1,5 @@
-CREATE TABLE IF NOT EXISTS "schema_migrations" (version varchar(128) primary key);
-CREATE TABLE users
+-- migrate:up
+create table users
 (
     id         integer primary key autoincrement,
     name       text not null,
@@ -8,14 +8,16 @@ CREATE TABLE users
     role       text not null,
     created_at datetime default current_timestamp
 );
-CREATE TABLE user_invites
+
+create table user_invites
 (
     id         integer primary key autoincrement,
     email      text not null,
     token      text not null,
     created_at datetime default current_timestamp
 );
-CREATE TABLE projects
+
+create table projects
 (
     id          integer primary key autoincrement,
     name        text    not null,
@@ -23,7 +25,8 @@ CREATE TABLE projects
     created_by  integer not null references users (id),
     created_at  datetime default current_timestamp
 );
-CREATE TABLE project_members
+
+create table project_members
 (
     id         integer primary key autoincrement,
     project_id integer not null references projects (id),
@@ -31,21 +34,18 @@ CREATE TABLE project_members
     role       text    not null,
     created_at timestamp default current_timestamp
 );
-CREATE TABLE services
+
+create table services
 (
     id             integer primary key autoincrement,
     name           text    not null,
     environment_id integer not null references environments (id),
     created_at     timestamp default current_timestamp
 );
-CREATE TABLE environments
-(
-    id          integer not null primary key autoincrement,
-    project_id  integer not null references projects (id),
-    name        text    not null unique,
-    description text
-);
--- Dbmate schema migrations
-INSERT INTO "schema_migrations" (version) VALUES
-  ('20230831194609'),
-  ('20230927181011');
+
+-- migrate:down
+drop table users;
+drop table user_invites;
+drop table projects;
+drop table project_members;
+drop table services;

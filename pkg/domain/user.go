@@ -6,9 +6,13 @@ import (
 	"time"
 )
 
+var (
+	UserRoleAdmin = "admin"
+)
+
 // User represents a Diploid user.
 type User struct {
-	ID        int       `json:"id"`
+	ID        int64     `json:"id"`
 	Name      string    `json:"name"`
 	Email     string    `json:"email"`
 	CreatedAt time.Time `json:"created_at"`
@@ -17,7 +21,7 @@ type User struct {
 // ToDB converts a User to a db.User.
 func (u *User) ToDB() *db.User {
 	return &db.User{
-		ID:    int64(u.ID),
+		ID:    u.ID,
 		Name:  u.Name,
 		Email: u.Email,
 		CreatedAt: sql.NullTime{
@@ -29,7 +33,7 @@ func (u *User) ToDB() *db.User {
 // UserFromDB converts a db.User to a User.
 func UserFromDB(u *db.User) *User {
 	return &User{
-		ID:        int(u.ID),
+		ID:        u.ID,
 		Name:      u.Name,
 		Email:     u.Email,
 		CreatedAt: u.CreatedAt.Time,

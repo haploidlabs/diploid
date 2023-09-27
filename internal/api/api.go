@@ -38,12 +38,17 @@ func (api *API) registerRoutes() {
 	// API Routes
 	v1 := chi.NewRouter()
 
-	// users
+	v1.Post("/auth/login", api.HandleLogin)
+
+	// Authenticated routes
 	v1Auth := v1.Group(nil)
 	v1Auth.Use(api.Auth)
-	v1.Post("/auth/login", api.HandleLogin())
-	// v1.Post("/users", api.HandleCreateUser)
-	// v1.Get("/users/@me", api.HandleGetUser)
+	v1Auth.Get("/projects", api.HandleGetProjects)
+	v1Auth.Post("/projects", api.HandleCreateProject)
+	v1Auth.Put("/projects/{projectID}", api.HandleUpdateProject)
+	v1Auth.Get("/projects/{projectID}/environments", api.HandleGetEnvironments)
+	v1Auth.Post("/projects/{projectID}/environments", api.HandleCreateEnvironment)
+	v1Auth.Put("/projects/{projectID}/environments/{environmentID}", api.HandleUpdateEnvironment)
 
 	api.r.Mount("/v1", v1)
 }

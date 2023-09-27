@@ -7,8 +7,8 @@ import (
 	"net/http"
 )
 
-func UserID(r *http.Request) string {
-	return r.Context().Value("userId").(string)
+func UserID(r *http.Request) int64 {
+	return r.Context().Value("userId").(int64)
 }
 
 func (api *API) User(w http.ResponseWriter, r *http.Request) *domain.User {
@@ -46,4 +46,14 @@ func DecodeBody(w http.ResponseWriter, r *http.Request, v interface{}) error {
 		WriteError(w, http.StatusBadRequest, domain.ErrBadRequest)
 	}
 	return err
+}
+
+func Int64FromString(w http.ResponseWriter, s string) int64 {
+	var i int64
+	err := json.Unmarshal([]byte(s), &i)
+	if err != nil {
+		WriteError(w, http.StatusBadRequest, domain.ErrBadRequest)
+		return 0
+	}
+	return i
 }

@@ -1,6 +1,6 @@
 -- name: CreateUser :one
-insert into users (name, email, password)
-values (?, ?, ?)
+insert into users (name, email, password, role)
+values (?, ?, ?, ?)
 returning *;
 
 -- name: GetUserByID :one
