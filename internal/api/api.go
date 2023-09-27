@@ -32,9 +32,6 @@ func New(opts Options) *API {
 }
 
 func (api *API) registerRoutes() {
-	// frontend (web)
-	api.r.Handle("/", http.FileServer(http.Dir("./web/build")))
-
 	// API Routes
 	v1 := chi.NewRouter()
 

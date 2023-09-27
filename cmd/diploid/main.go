@@ -7,6 +7,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"log/slog"
+	"net/http"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -66,6 +68,14 @@ func main() {
 	// Seed database
 	seed(sqlcDB)
 
+	// Serve Vue app static files
+	r.Get("/assets/*", serveStatic("./web/dist/assets"))
+
+	// Catch-all route for client-side routing
+	r.Get("/*", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./web/dist/index.html")
+	})
+
 	// Create and start API server
 	s := api.New(api.Options{
 		Router:         r,
@@ -74,6 +84,26 @@ func main() {
 		JWTSecret:      cfg.JWTSecret,
 	})
 	s.Start(cfg.BindAddress)
+}
+
+func serveStatic(basePath string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		path := strings.TrimPrefix(r.URL.Path, "/assets")
+		fullPath := filepath.Join(basePath, path)
+		ext := filepath.Ext(fullPath)
+
+		switch ext {
+		case ".js":
+			w.Header().Set("Content-Type", "application/javascript")
+		case ".css":
+			w.Header().Set("Content-Type", "text/css")
+		case ".svg":
+			w.Header().Set("Content-Type", "image/svg+xml")
+			// Add more cases for other file types if needed
+		}
+
+		http.ServeFile(w, r, fullPath)
+	}
 }
 
 func seed(sqlcDB *db.Queries) {
