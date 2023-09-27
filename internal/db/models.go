@@ -8,10 +8,48 @@ import (
 	"database/sql"
 )
 
+type Environment struct {
+	ID          int64
+	ProjectID   int64
+	Name        string
+	Description sql.NullString
+}
+
+type Project struct {
+	ID          int64
+	Name        string
+	Description sql.NullString
+	CreatedBy   int64
+	CreatedAt   sql.NullTime
+}
+
+type ProjectMember struct {
+	ID        int64
+	ProjectID int64
+	UserID    int64
+	Role      string
+	CreatedAt sql.NullTime
+}
+
+type Service struct {
+	ID            int64
+	Name          string
+	EnvironmentID int64
+	CreatedAt     sql.NullTime
+}
+
 type User struct {
 	ID        int64
 	Name      string
 	Email     string
 	Password  string
+	Role      string
+	CreatedAt sql.NullTime
+}
+
+type UserInvite struct {
+	ID        int64
+	Email     string
+	Token     string
 	CreatedAt sql.NullTime
 }

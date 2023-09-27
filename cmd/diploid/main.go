@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"database/sql"
+	"github.com/haploidlabs/diploid/pkg/domain"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"log/slog"
@@ -98,6 +99,7 @@ func seedUser(sqlcDB *db.Queries) {
 		Name:     "Admin",
 		Email:    "admin@diploid.dev",
 		Password: string(pw),
+		Role:     domain.UserRoleAdmin,
 	})
 
 	if err != nil {
