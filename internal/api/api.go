@@ -47,7 +47,7 @@ func (api *API) registerRoutes() {
 	v1Auth.Post("/projects/{projectID}/environments", api.HandleCreateEnvironment)
 	v1Auth.Put("/projects/{projectID}/environments/{environmentID}", api.HandleUpdateEnvironment)
 
-	api.r.Mount("/v1", v1)
+	api.r.Mount("/api/v1", v1)
 }
 
 func (api *API) Start(addr string) {
