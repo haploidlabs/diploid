@@ -1,4 +1,9 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { storeToRefs } from "pinia";
+
+const authStore = useAuthStore();
+const { isLoggedIn } = storeToRefs(authStore);
+</script>
 
 <template>
   <nav class="navbar">
@@ -6,7 +11,8 @@
       <NuxtLink to="/" class="btn btn-ghost text-xl">Diploid</NuxtLink>
     </div>
     <div class="navbar-end">
-      <NuxtLink  href="/auth/signin" class="btn btn-neutral btn-sm">Sign In</NuxtLink>
+      <NuxtLink v-if="isLoggedIn" to="/" class="btn btn-sm btn-ghost">Dashboard</NuxtLink>
+      <NuxtLink v-else to="/auth/signin" class="btn btn-neutral btn-sm">Sign In</NuxtLink>
     </div>
   </nav>
 </template>

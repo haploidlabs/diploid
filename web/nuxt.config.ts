@@ -4,7 +4,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ["@pinia/nuxt", "@nuxtjs/google-fonts", "nuxt-lucide-icons"],
   imports: {
-    dirs: ["store"],
+    dirs: ["stores"],
   },
   css: ['~/assets/css/tailwind.css'],
   app: {
@@ -34,4 +34,9 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
+  runtimeConfig: {
+    public: {
+      apiUrl: process.env.NUXT_PUBLIC_API_URL || "http://localhost:3000/api/v1",
+    }
+  }
 });

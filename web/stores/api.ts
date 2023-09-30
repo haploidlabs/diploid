@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { useAuthStore } from "./auth";
 
 export const useApiStore = defineStore("api", () => {
-    const apiUrl = import.meta.env.VITE_API_BASE_URL as string;
+    const apiUrl = useRuntimeConfig().public.apiUrl;
 
     const GET = async <T>(path: string) => {
         const token = useAuthStore().token;
@@ -17,6 +17,7 @@ export const useApiStore = defineStore("api", () => {
 
     const POST = async <T>(path: string, body: any) => {
         const token = useAuthStore().token;
+        console.log("JDJDJDJDJDJ", body);
 
         const response = await fetch(`${apiUrl}${path}`, {
             method: "POST",

@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { is, parse, safeParse } from "valibot";
+import { safeParse } from "valibot";
 import { LoginRequest, schemaLoginRequest } from "~/lib/types/auth";
-import { useAuthStore } from "~/stores/auth";
 
 definePageMeta({
   layout: "landing",
@@ -9,8 +8,8 @@ definePageMeta({
 
 const authStore = useAuthStore();
 
-const inputEmail = ref("");
-const inputPassword = ref("");
+const inputEmail = ref("admin@diploid.dev");
+const inputPassword = ref("admin1234");
 const isLoading = ref(false);
 const validationErrors = ref<string[]>([]);
 
