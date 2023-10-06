@@ -20,6 +20,10 @@ func (api *API) User(w http.ResponseWriter, r *http.Request) *domain.User {
 	return domain.UserFromDB(&u)
 }
 
+func WriteStatus(w http.ResponseWriter, code int) {
+	w.WriteHeader(code)
+}
+
 func WriteJSON(w http.ResponseWriter, code int, data interface{}) {
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(code)

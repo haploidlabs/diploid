@@ -1,26 +1,38 @@
 {
   "name": "nuxt-app",
+  "devDependencies": {
+    "@hebilicious/vue-query-nuxt": "^0.2.1",
+    "@nuxt/devtools": "latest",
+    "@nuxtjs/eslint-config-typescript": "^12.1.0",
+    "@nuxtjs/google-fonts": "^3.0.2",
+    "@pinia/nuxt": "^0.4.11",
+    "@tanstack/vue-query": "^4.35.6",
+    "@typescript-eslint/eslint-plugin": "^6.7.3",
+    "@typescript-eslint/parser": "^6.7.3",
+    "daisyui": "latest",
+    "eslint": "^8.50.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "eslint-plugin-vue": "^9.17.0",
+    "nuxt": "^3.7.4",
+    "nuxt-icon": "^0.5.0",
+    "pinia": "^2.1.6",
+    "prettier": "^3.0.3",
+    "tailwindcss": "^3.3.3",
+    "typescript": "^5.2.2",
+    "valibot": "^0.17.1"
+  },
   "private": true,
-  "type": "module",
   "scripts": {
     "build": "nuxt generate",
     "dev": "nuxt dev --port 4321",
     "dev:tunnel": "nuxt dev --tunnel --port 4321",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
+    "lint:fix": "eslint --ext .js,.vue --ignore-path .gitignore . --fix",
     "format": "prettier --ignore-path .gitignore --write \"**/*.{js,vue,json,md}\"",
     "format:check": "prettier --ignore-path .gitignore --check \"**/*.{js,vue,json,md}\""
   },
-  "devDependencies": {
-    "@nuxt/devtools": "latest",
-    "@nuxtjs/google-fonts": "^3.0.2",
-    "@pinia/nuxt": "^0.4.11",
-    "daisyui": "latest",
-    "nuxt": "^3.7.4",
-    "nuxt-lucide-icons": "^1.0.2",
-    "pinia": "^2.1.6",
-    "prettier": "^3.0.3",
-    "tailwindcss": "^3.3.3",
-    "valibot": "^0.17.1"
-  }
+  "type": "module"
 }

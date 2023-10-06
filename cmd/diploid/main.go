@@ -12,7 +12,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -26,19 +25,6 @@ import (
 
 func main() {
 	cfg := config.LoadConfig()
-
-	// Create Docker Client
-	dockerCl, err := client.NewClientWithOpts(client.FromEnv)
-	if err != nil {
-		panic(err)
-	}
-	containers, err := dockerCl.ContainerList(context.Background(), types.ContainerListOptions{})
-	if err != nil {
-		panic(err)
-	}
-	for _, container := range containers {
-		slog.Info(container.ID)
-	}
 
 	// Create Database Client
 	dbClient, err := sql.Open("sqlite3", cfg.DatabaseURL)
@@ -63,13 +49,19 @@ func main() {
 		MaxAge:           300,
 	}))
 
+	// Docker Client
+	dockerCli, err := client.NewClientWithOpts(client.FromEnv)
+	if err != nil {
+		log.Fatalf("failed to create docker client: %v", err)
+	}
+
 	sqlcDB := db.New(dbClient)
 
 	// Seed database
 	seed(sqlcDB)
 
 	// Serve Vue app static files
-	r.Get("/assets/*", serveStatic("./web/dist/assets"))
+	r.Get("/_nuxt/*", serveStatic("./web/dist/_nuxt"))
 
 	// Catch-all route for client-side routing
 	r.Get("/*", func(w http.ResponseWriter, r *http.Request) {
@@ -82,13 +74,14 @@ func main() {
 		AllowedOrigins: strings.Split(cfg.CorsAllowOrigins, ","),
 		DB:             sqlcDB,
 		JWTSecret:      cfg.JWTSecret,
+		DockerClient:   dockerCli,
 	})
 	s.Start(cfg.BindAddress)
 }
 
 func serveStatic(basePath string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		path := strings.TrimPrefix(r.URL.Path, "/assets")
+		path := strings.TrimPrefix(r.URL.Path, "/_nuxt")
 		fullPath := filepath.Join(basePath, path)
 		ext := filepath.Ext(fullPath)
 
@@ -124,7 +117,7 @@ func seedUser(sqlcDB *db.Queries) {
 	}
 
 	// Create seed admin user
-	pw, err := bcrypt.GenerateFromPassword([]byte("admin"), bcrypt.DefaultCost)
+	pw, err := bcrypt.GenerateFromPassword([]byte("admin1234"), bcrypt.DefaultCost)
 	_, err = sqlcDB.CreateUser(ctx, db.CreateUserParams{
 		Name:     "Admin",
 		Email:    "admin@diploid.dev",

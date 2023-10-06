@@ -12,7 +12,7 @@ type Config struct {
 	DatabaseURL      string `envconfig:"DATABASE_URL" default:"diploid.db"`
 	BindAddress      string `default:":3000"`
 	JWTSecret        string `envconfig:"JWT_SECRET"`
-	CorsAllowOrigins string `envconfig:"CORS_ALLOW_ORIGINS" default:"http://localhost:3000,http://localhost:5173"`
+	CorsAllowOrigins string `envconfig:"CORS_ALLOW_ORIGINS" default:"http://localhost:3000,http://localhost:4321"`
 }
 
 func LoadConfig() *Config {

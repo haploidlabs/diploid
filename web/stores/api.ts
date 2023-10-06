@@ -1,75 +1,41 @@
-import { defineStore } from "pinia";
+import { acceptHMRUpdate, defineStore } from "pinia";
 import { useAuthStore } from "./auth";
 
+type Method = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+
 export const useApiStore = defineStore("api", () => {
-    const apiUrl = useRuntimeConfig().public.apiUrl;
+  const apiUrl = useRuntimeConfig().public.apiUrl;
 
-    const GET = async <T>(path: string) => {
-        const token = useAuthStore().token;
+  interface ApiMethods {
+    <T>(method: Method, path: string, body?: any): Promise<T>;
+    (method: Method, path: string, body?: any): Promise<Response>;
+    <T>(method: Method, path: string, body?: any): Promise<T>;
+  }
 
-        const response = await fetch(`${apiUrl}${path}`, {
-            headers: {
-                Authorization: token ? `Bearer ${token}` : "",
-            },
-        });
-        return (await response.json()) as T;
+  const fetchWrapper: ApiMethods = async <T extends any | Object>(
+    method: Method,
+    path: string,
+    body: any,
+  ) => {
+    const token = useAuthStore().token;
+    const options = {
+      method,
+      headers: {
+        Authorization: token ? `Bearer ${token}` : "",
+      },
+      body: JSON.stringify(body),
     };
 
-    const POST = async <T>(path: string, body: any) => {
-        const token = useAuthStore().token;
-        console.log("JDJDJDJDJDJ", body);
+    return await $fetch<T>(`${apiUrl}${path}`, options);
+  };
 
-        const response = await fetch(`${apiUrl}${path}`, {
-            method: "POST",
-            headers: {
-                Authorization: token ? `Bearer ${token}` : "",
-            },
-            body: JSON.stringify(body),
-        });
+  const GET = async <T>(path: string) => await fetchWrapper<T>("GET", path, undefined);
+  const POST = async <T>(path: string, body: any) => await fetchWrapper<T>("POST", path, body);
+  const PUT = async <T>(path: string, body: any) => await fetchWrapper<T>("PUT", path, body);
+  const PATCH = async <T>(path: string, body: any) => await fetchWrapper<T>("PATCH", path, body);
+  const DELETE = async <T>(path: string) => await fetchWrapper<T>("DELETE", path, undefined);
 
-        return (await response.json()) as T;
-    };
-
-    const PUT = async <T>(path: string, body: any) => {
-        const token = useAuthStore().token;
-
-        const response = await fetch(`${apiUrl}${path}`, {
-            method: "PUT",
-            headers: {
-                Authorization: token ? `Bearer ${token}` : "",
-            },
-            body: JSON.stringify(body),
-        });
-
-        return (await response.json()) as T;
-    }
-
-    const PATCH = async <T>(path: string, body: any) => {
-        const token = useAuthStore().token;
-
-        const response = await fetch(`${apiUrl}${path}`, {
-            method: "PATCH",
-            headers: {
-                Authorization: token ? `Bearer ${token}` : "",
-            },
-            body: JSON.stringify(body),
-        });
-
-        return (await response.json()) as T;
-    }
-
-    const DELETE = async <T>(path: string) => {
-        const token = useAuthStore().token;
-
-        const response = await fetch(`${apiUrl}${path}`, {
-            method: "DELETE",
-            headers: {
-                Authorization: token ? `Bearer ${token}` : "",
-            },
-        });
-
-        return (await response.json()) as T;
-    }
-
-    return { GET, POST, PUT, PATCH, DELETE };
+  return { GET, POST, PUT, PATCH, DELETE };
 });
+
+if (import.meta.hot) import.meta.hot.accept(acceptHMRUpdate(useApiStore, import.meta.hot));

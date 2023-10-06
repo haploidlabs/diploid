@@ -1,4 +1,5 @@
-import { Config } from "tailwindcss";
+import type { Config } from "tailwindcss";
+import daisyui from "daisyui";
 
 export default {
   content: [
@@ -23,10 +24,10 @@ export default {
     themes: [
       {
         mytheme: {
-          "primary": "#a991f7",
-          "secondary": "#f6d860",
-          "accent": "#37cdbe",
-          "neutral": "#000000",
+          primary: "#a991f7",
+          secondary: "#f6d860",
+          accent: "#37cdbe",
+          neutral: "#000000",
           "base-100": "#ffffff",
 
           "--rounded-box": "0.5rem", // border radius rounded-box utility class, used in card and other large boxes
@@ -43,6 +44,5 @@ export default {
       },
     ],
   },
-  plugins: [require("daisyui")],
+  plugins: [daisyui],
 } satisfies Config;
-
