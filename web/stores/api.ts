@@ -6,17 +6,11 @@ type Method = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 export const useApiStore = defineStore("api", () => {
   const apiUrl = useRuntimeConfig().public.apiUrl;
 
-  interface ApiMethods {
-    <T>(method: Method, path: string, body?: any): Promise<T>;
-    (method: Method, path: string, body?: any): Promise<Response>;
-    <T>(method: Method, path: string, body?: any): Promise<T>;
-  }
-
-  const fetchWrapper: ApiMethods = async <T extends any | Object>(
+  const fetchWrapper = async <T extends any | Object>(
     method: Method,
     path: string,
     body: any,
-  ) => {
+  ): Promise<T> => {
     const token = useAuthStore().token;
     const options = {
       method,

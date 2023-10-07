@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 import daisyui from "daisyui";
+import typography from "@tailwindcss/typography";
 
 export default {
   content: [
@@ -30,7 +31,7 @@ export default {
           neutral: "#000000",
           "base-100": "#ffffff",
 
-          "--rounded-box": "0.5rem", // border radius rounded-box utility class, used in card and other large boxes
+          "--rounded-box": "0.25rem", // border radius rounded-box utility class, used in card and other large boxes
           "--rounded-btn": "0.25rem", // border radius rounded-btn utility class, used in buttons and similar element
           "--rounded-badge": "1.9rem", // border radius rounded-badge utility class, used in badges and similar
           "--animation-btn": "0.1s", // duration of animation when you click on button
@@ -44,5 +45,5 @@ export default {
       },
     ],
   },
-  plugins: [daisyui],
+  plugins: [typography, daisyui],
 } satisfies Config;
