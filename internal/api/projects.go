@@ -167,3 +167,44 @@ func (api *API) HandleUpdateProject(w http.ResponseWriter, r *http.Request) {
 		"project": domain.ProjectFromDB(&p),
 	})
 }
+
+func (api *API) HandleDeleteProject(w http.ResponseWriter, r *http.Request) {
+	uid := UserID(r)
+
+	rawProjectId := chi.URLParam(r, "projectID")
+	if rawProjectId == "" {
+		WriteError(w, http.StatusBadRequest, domain.ErrBadRequest)
+		return
+	}
+	projectID := Int64FromString(w, rawProjectId)
+	if projectID == 0 {
+		return
+	}
+
+	// check if project exists
+	p, err := api.DB.GetProjectByID(r.Context(), projectID)
+	if err != nil && errors.Is(err, sql.ErrNoRows) {
+		WriteError(w, http.StatusNotFound, domain.ErrNotFound)
+		return
+	}
+	if err != nil {
+		slog.Error("failed to get project by id", err)
+		WriteError(w, http.StatusInternalServerError, domain.ErrInternal)
+		return
+	}
+
+	// check if user is member of project
+	if p.CreatedBy != uid {
+		WriteError(w, http.StatusForbidden, domain.ErrUnauthorized)
+		return
+	}
+
+	// Delete project
+	err = api.DB.DeleteProject(r.Context(), projectID)
+	if err != nil {
+		slog.Error("failed to delete project", err)
+		WriteError(w, http.StatusInternalServerError, domain.ErrInternal)
+		return
+	}
+	WriteStatus(w, http.StatusOK)
+}

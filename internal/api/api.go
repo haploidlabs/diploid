@@ -48,6 +48,7 @@ func (api *API) registerRoutes() {
 	v1Auth.Get("/projects", api.HandleGetProjects)
 	v1Auth.Post("/projects", api.HandleCreateProject)
 	v1Auth.Put("/projects/{projectID}", api.HandleUpdateProject)
+	v1Auth.Delete("/projects/{projectID}", api.HandleDeleteProject)
 	v1Auth.Get("/projects/{projectID}/environments", api.HandleGetEnvironments)
 	v1Auth.Post("/projects/{projectID}/environments", api.HandleCreateEnvironment)
 	v1Auth.Put("/projects/{projectID}/environments/{environmentID}", api.HandleUpdateEnvironment)

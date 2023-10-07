@@ -25,3 +25,7 @@ set name        = ?,
     description = ?
 where id = ?
 returning *;
+
+-- name: DeleteProject :exec
+delete from projects
+where id = ?;

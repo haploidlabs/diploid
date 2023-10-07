@@ -10,6 +10,7 @@
         <input
           v-model="inputEmail"
           type="email"
+          name="email"
           placeholder="Email"
           class="input input-bordered w-full"
         />
@@ -19,12 +20,13 @@
         <input
           v-model="inputPassword"
           type="password"
+          name="password"
           placeholder="Password"
           class="input input-bordered w-full"
         />
       </div>
       <div>
-        <p v-for="error in validationErrors" :key="error" class="text-sm text-red-500">
+        <p v-for="error in errors" :key="error" class="text-sm text-red-500">
           {{ error }}
         </p>
       </div>
@@ -43,28 +45,24 @@ import { safeParse } from "valibot";
 import type { LoginRequest } from "~/lib/types/auth";
 import { schemaLoginRequest } from "~/lib/types/auth";
 
-definePageMeta({
-  layout: "landing",
-});
-
 const router = useRouter();
 const authStore = useAuthStore();
 
 const inputEmail = ref("admin@diploid.dev");
 const inputPassword = ref("admin1234");
 const isLoading = ref(false);
-const validationErrors = ref<string[]>([]);
+const errors = ref<string[]>([]);
 
 function handleSignIn() {
   isLoading.value = true;
-  validationErrors.value = [];
+  errors.value = [];
   const data = {
     email: inputEmail.value,
     password: inputPassword.value,
   } satisfies LoginRequest;
   const validation = safeParse(schemaLoginRequest, data);
   if (!validation.success) {
-    validationErrors.value = validation.issues.map((issue) => issue.message);
+    errors.value = validation.issues.map((issue) => issue.message);
     isLoading.value = false;
     return;
   }
@@ -72,6 +70,9 @@ function handleSignIn() {
     .login(data)
     .then(() => {
       router.push("/");
+    })
+    .catch((error) => {
+      errors.value = [error.message];
     })
     .finally(() => {
       isLoading.value = false;

@@ -41,10 +41,6 @@
 <script lang="ts" setup>
 import { Container } from "~/lib/types/containers";
 
-definePageMeta({
-  layout: "landing",
-});
-
 const apiStore = useApiStore();
 
 const { data, error } = useQuery({
